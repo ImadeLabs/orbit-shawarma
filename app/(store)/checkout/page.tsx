@@ -6,11 +6,12 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { ArrowLeft, Bike, Store, Wallet, Landmark, CreditCard } from "lucide-react";
+import { ArrowLeft, Bike, Store, Wallet, Landmark, CreditCard, Copy, Check } from "lucide-react";
 import { checkoutSchema, type CheckoutSchema } from "@/lib/checkout-schema";
 import { useCartStore, DELIVERY_FEE, FREE_DELIVERY_THRESHOLD } from "@/lib/store/cart-store";
 import { buildWhatsAppOrderMessage, getWhatsAppOrderLink } from "@/lib/whatsapp";
 import { generateOrderNumber, formatNaira, cn } from "@/lib/utils";
+import { bankDetails } from "@/lib/data/bank-details";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +29,34 @@ const paymentOptions = [
   { value: "bank-transfer", label: "Bank Transfer", icon: Landmark },
   { value: "online-payment", label: "Online Payment (Paystack)", icon: CreditCard },
 ] as const;
+
+function CopyableRow({ label, value }: { label: string; value: string }) {
+  const [copied, setCopied] = React.useState(false);
+
+  function handleCopy() {
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  }
+
+  return (
+    <div className="flex items-center justify-between rounded-xl bg-background px-3.5 py-2.5">
+      <div>
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="font-mono text-sm font-bold">{value}</p>
+      </div>
+      <button
+        type="button"
+        onClick={handleCopy}
+        className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+        aria-label={`Copy ${label}`}
+      >
+        {copied ? <Check className="h-4 w-4 text-green-600" /> : <Copy className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+}
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -200,6 +229,21 @@ export default function CheckoutPage() {
                   );
                 })}
               </div>
+
+              {watch("paymentOption") === "bank-transfer" && (
+                <div className="mt-4 space-y-2 rounded-2xl bg-muted/60 p-4">
+                  <p className="text-xs font-semibold text-muted-foreground">
+                    Transfer the total amount to any of the accounts below, then place your order — we'll confirm on WhatsApp. (Demo account details)
+                  </p>
+                  <div className="space-y-2">
+                    <CopyableRow label="Account Name" value={bankDetails.accountName} />
+                    {bankDetails.banks.map((b) => (
+                      <CopyableRow key={b.bank} label={b.bank} value={b.accountNumber} />
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {watch("paymentOption") === "online-payment" && (
                 <p className="mt-3 text-xs text-muted-foreground">
                   Online payment is a placeholder for Paystack integration - you'll be redirected to complete payment after connecting your Paystack account.

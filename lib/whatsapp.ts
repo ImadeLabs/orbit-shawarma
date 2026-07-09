@@ -1,5 +1,6 @@
 import type { CartLine, CheckoutFormData } from "@/lib/types";
 import { formatNaira } from "@/lib/utils";
+import { bankDetails } from "@/lib/data/bank-details";
 
 export const RESTAURANT_WHATSAPP_NUMBER = "2348000000000"; // TODO: replace with real WhatsApp number
 
@@ -59,6 +60,14 @@ export function buildWhatsAppOrderMessage({
   lines.push(`*Total: ${formatNaira(total)}*`);
   lines.push("");
   lines.push(`*Payment Method:* ${paymentLabels[form.paymentOption]}`);
+  if (form.paymentOption === "bank-transfer") {
+    lines.push("");
+    lines.push(`*Bank Transfer Details (demo):*`);
+    lines.push(`Account Name: ${bankDetails.accountName}`);
+    bankDetails.banks.forEach((b) => {
+      lines.push(`${b.bank}: ${b.accountNumber}`);
+    });
+  }
   lines.push("");
   lines.push(`Please confirm my order. Thank you!`);
   return lines.join("\n");
