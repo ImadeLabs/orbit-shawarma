@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b1a"/>
+      <stop offset="60%" stop-color="#e11d2e"/>
+      <stop offset="100%" stop-color="#141110"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <text x="600" y="330" font-family="Arial, sans-serif" font-size="96" font-weight="800" fill="#ffffff" text-anchor="middle">Orbit Shawarma</text>
+  <text x="600" y="400" font-family="Arial, sans-serif" font-size="34" fill="#ffe8d6" text-anchor="middle">Fresh Shawarma, Burgers &amp; Fries - Delivered Fast</text>
+</svg>
